@@ -131,6 +131,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
         int value = Integer.parseInt((String) newValue);
         if (preference == mQuickPulldown) {
             updateQuickPulldownSummary(value);
+        }
         String key = preference.getKey();
         switch (key) {
             case STATUS_BAR_BATTERY_STYLE:
