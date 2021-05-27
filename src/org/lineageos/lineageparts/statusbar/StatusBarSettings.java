@@ -72,7 +72,6 @@ public class StatusBarSettings extends SettingsPreferenceFragment
     private PreferenceScreen mNetworkTrafficPref;
 
     private boolean mHasNotch;
-    private boolean mHasDotNotch;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,10 +80,8 @@ public class StatusBarSettings extends SettingsPreferenceFragment
 
         mNetworkTrafficPref = findPreference(NETWORK_TRAFFIC_SETTINGS);
 
-
         mHasNotch = DeviceUtils.hasNotch(getActivity());
-        mHasDotNotch = DeviceUtils.hasDotNotch(getActivity());
-        if (mHasNotch && !(mHasDotNotch)) {
+        if (mHasNotch) {
             getPreferenceScreen().removePreference(mNetworkTrafficPref);
         }
 
@@ -198,7 +195,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
     }
 
     private void updateNetworkTrafficStatus(int clockPosition) {
-        if (mHasNotch && !(mHasDotNotch)) {
+        if (mHasNotch) {
             // Unconditional no network traffic for you
             return;
         }
@@ -228,7 +225,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
         public Set<String> getNonIndexableKeys(Context context) {
             final Set<String> result = new ArraySet<String>();
 
-            if (DeviceUtils.hasNotch(context) && !(DeviceUtils.hasDotNotch(context))) {
+            if (DeviceUtils.hasNotch(context)) {
                 result.add(NETWORK_TRAFFIC_SETTINGS);
             }
             return result;
