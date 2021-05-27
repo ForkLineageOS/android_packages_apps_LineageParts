@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014-2015 The CyanogenMod Project
- *               2017-2020 The LineageOS Project
+ *               2017-2019 The LineageOS Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,6 @@ import org.lineageos.lineageparts.R;
 import org.lineageos.lineageparts.SettingsPreferenceFragment;
 import org.lineageos.lineageparts.search.BaseSearchIndexProvider;
 import org.lineageos.lineageparts.search.Searchable;
-import org.lineageos.lineageparts.utils.DeviceUtils;
 
 import java.util.Set;
 
@@ -71,7 +70,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
     private PreferenceCategory mStatusBarClockCategory;
     private PreferenceScreen mNetworkTrafficPref;
 
-    private boolean mHasNotch;
+    private static boolean sHasNotch;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,8 +79,10 @@ public class StatusBarSettings extends SettingsPreferenceFragment
 
         mNetworkTrafficPref = findPreference(NETWORK_TRAFFIC_SETTINGS);
 
-        mHasNotch = DeviceUtils.hasNotch(getActivity());
-        if (mHasNotch) {
+        sHasNotch = getResources().getBoolean(
+                org.lineageos.platform.internal.R.bool.config_haveNotch);
+
+        if (sHasNotch) {
             getPreferenceScreen().removePreference(mNetworkTrafficPref);
         }
 
@@ -127,7 +128,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
             mStatusBarAmPm.setSummary(R.string.status_bar_am_pm_info);
         }
 
-        final boolean disallowCenteredClock = mHasNotch || getNetworkTrafficStatus() != 0;
+        final boolean disallowCenteredClock = sHasNotch || getNetworkTrafficStatus() != 0;
 
         // Adjust status bar preferences for RTL
         if (getResources().getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
@@ -195,7 +196,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
     }
 
     private void updateNetworkTrafficStatus(int clockPosition) {
-        if (mHasNotch) {
+        if (sHasNotch) {
             // Unconditional no network traffic for you
             return;
         }
@@ -225,7 +226,7 @@ public class StatusBarSettings extends SettingsPreferenceFragment
         public Set<String> getNonIndexableKeys(Context context) {
             final Set<String> result = new ArraySet<String>();
 
-            if (DeviceUtils.hasNotch(context)) {
+            if (sHasNotch) {
                 result.add(NETWORK_TRAFFIC_SETTINGS);
             }
             return result;
